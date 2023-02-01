@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+</head>
+
+<body>
+  <style>
+    button {
+      padding: 1%;
+      border-radius: 25px;
+
+    }
+
+    #load {
+      border: 16px solid black;
+      border-radius: 50%;
+      border-top: 16px solid white;
+      width: 80px;
+      height: 80px;
+      animation: rotate 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+
+    }
+    th,td{
+      border: 2px solid black;
+      margin-left: 50px;
+    }
+    input{
+      padding: 2%;
+      margin: 3%;
+    }
+  </style>
+  <h1 class="ha"> Student List</h1>
+  <input type="text" id="myinput" placeholder="Search for Name" onkeyup="searchfun()">
+  <table class="user_table" id="mytable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <TH>NAME</TH>
+        <TH>phone</TH>
+
+        <th>EMAIL</th>
+        <th>website</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- <td>
+          <i></i>
+        </td> -->
+      </tr>
+    </tbody>
+  </table>
+  <div id="load"></div>
+  <button id="getdata">Getdata</button>
+</body>
+<script>
+  $(window).on("load", function () {
+    $("#getdata").on('click', function () {
+      $.ajax({
+        url: "https://jsonplaceholder.typicode.com/users",
+        type: "GET",
+        beforeSend: function () {
+          console.log("hey")
+          $("#load").show()
+        },
+        success: function (response, status) {
+          console.log(response);
+          $("#load").hide()
+          let html = "";
+          for (let i = 0; i < response.length; i++) {
+            const { id, name,phone, email ,website} = response[i];
+            html +=`
+              <tr>
+                <td>${id}</td>
+                <td>${name}</td>
+                <td>${phone}</td>
+                <td>${email}</td>
+                <td>${website}</td>
+                
+              </tr>
+              `
+          }
+$('.user_table').find('tbody').append(html);
+        },
+        error: function (error, status) {
+          console.log(error)
+          $("#load").hide()
+
+        }
+       
+      
+      })
+    })
+  })
+   function searchfun(){
+    let filter =document.getElementById('myinput').value.toUpperCase();
+    let mytable=document.getElementById('mytable');
+    let tr= mytable.getElementsByTagName('tr');
+    for (let i = 0; i < tr.length; i++) {
+      let td =tr[i].getElementsByTagName('td')[1];
+      if(td){
+        let textvalue = td.textContent || td.innerHTML;
+        if(textvalue.toUpperCase().indexOf(filter) > -1){
+          tr[i].style.display = "";
+        }else{
+          tr[i].style.display = "none";
+
+        }
+      }
+      
+    }
+   }
+</script>
+
+</html>
